@@ -389,6 +389,31 @@ const kbData = [
         category: 'Ready Spiel - Devolución de llamada perdida/desconectada (Missed / Disconnected Call)',
         keywords: 'llamada perdida disconnected missed call return',
         text: 'Hola, soy [Agent] y le devuelvo la llamada del Servicio al Cliente de Foodie. Parece que perdimos su llamada. Me encantaría ayudarle con el programa de asistencia alimentaria y ver si puede precalificar. ¿Está disponible para hablar en este momento?\n[EN]Hello, this is [Agent] calling back from Foodie Customer Service. It looks like we missed your call. I’d love to help you with the food assistance program and see if you may pre-qualify. Are you available to speak right now?'
+    },
+    {
+        category: 'Ready Spiel - ¿Cómo se escribe su nombre? (How do you spell your name?)',
+        keywords: 'spell name escribir nombre',
+        text: '¿Cómo se escribe su nombre?\n[EN]How do you spell your name?'
+    },
+    {
+        category: 'Ready Spiel - ¿Cuál es el nombre de otro miembro con Medicaid? (What\'s the name of another Medicaid member?)',
+        keywords: 'another member name otro miembro medicaid',
+        text: '¿Cuál es el nombre de otro miembro con Medicaid?\n[EN]What\'s the name of another Medicaid member?'
+    },
+    {
+        category: 'Ready Spiel - ¿Cuál es su número de teléfono? (What is your telephone number?)',
+        keywords: 'telephone phone number numero de telefono celular',
+        text: '¿Cuál es su número de teléfono?\n[EN]What is your telephone number?'
+    },
+    {
+        category: 'Ready Spiel - ¿Cuál es su correo electrónico? (What is your email address?)',
+        keywords: 'email address correo electronico',
+        text: '¿Cuál es su correo electrónico?\n[EN]What is your email address?'
+    },
+    {
+        category: 'Ready Spiel - ¿Qué solicitud? (What application?) Esto es en relación a su solicitud... (This is regarding your application...)',
+        keywords: 'regarding application relacion solicitud food assistance asistencia alimentaria scn',
+        text: 'Esto es en relación a su solicitud de asistencia alimentaria a través de SCN.\n[EN]This is regarding your application for food assistance through SCN.'
     }
 ];
 
