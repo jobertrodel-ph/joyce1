@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foodie CSM Call Workflow</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="lang-en dir-inbound">
+    <div id="sticky-header">
+        <div style="flex: 1; display: flex; align-items: center;">
+            <span class="header-title">🍔 Foodie Customer Service</span>
+        </div>
+        <div style="flex: 1; display: flex; justify-content: center; gap: 15px;">
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSeyxhKgF1w9IN4iW99_Ip67D4F1LsQklg0kZPendipj5t0gLA/viewform" target="_blank" class="header-btn">English Form</a>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSdHWwuMufXeGi9G8eXy4UKdD9lKm-rjRwOcEmkZAgnUZ3Duig/viewform" target="_blank" class="header-btn">Spanish Form</a>
+        </div>
+        <div style="flex: 1; display: flex; justify-content: flex-end;">
+            <button id="btn-new-session" style="background-color: #2e7d32; margin: 0;">🔄 New Session</button>
+        </div>
+    </div>
+
+    <div id="main-wrapper">
+        <div id="sidebar">
+            <h2>Call Info</h2>
+            <div class="sidebar-item">
+                <strong>Agent Name</strong>
+                <span id="side-agent">-</span>
+            </div>
+            <div class="sidebar-item">
+                <strong>Customer Name</strong>
+                <span id="side-customer">-</span>
+            </div>
+            <div class="sidebar-item">
+                <strong>Phone Number</strong>
+                <span id="side-phone">-</span>
+            </div>
+            
+            <div id="sidebar-members-container" style="margin-top: 15px; border-top: 1px dashed #ffe0b2; padding-top: 15px; display: none;">
+                <h3 style="color: #e65100; font-size: 1.1em; margin-top: 0; margin-bottom: 10px;">Added Members</h3>
+                <div id="sidebar-members-list"></div>
+                <button id="btn-copy-members-template" style="background-color: #0288d1; width: 100%; font-size: 0.85em; padding: 10px; margin-top: 12px;">📋 Copy Members Data</button>
+            </div>
+
+            <div class="sidebar-item" style="margin-top: 25px;">
+                <strong>Notes</strong>
+                <textarea id="call-notes" rows="12" placeholder="Type your application notes here..."></textarea>
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <button id="btn-push-copy-notes" style="font-size: 0.8em; padding: 5px 10px; background-color: #f57c00; flex: 1;">📋 Copy Notes</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="app-container">
+            <div id="step-setup" class="step active" style="margin-bottom: 25px;">
+                <h1>Call Setup</h1>
+                <fieldset id="language-group">
+                    <legend>Language:</legend>
+                    <input type="radio" id="lang-en" name="language" value="en" checked>
+                    <label for="lang-en" class="radio-label">English</label>
+                    <input type="radio" id="lang-es" name="language" value="es">
+                    <label for="lang-es" class="radio-label">Spanish</label>
+                </fieldset>
+                <fieldset id="direction-group">
+                    <legend>Call Direction:</legend>
+                    <div class="radio-inline">
+                        <input type="radio" id="dir-inbound" name="callDirection" value="inbound" checked>
+                        <label for="dir-inbound" class="radio-label">Inbound</label>
+                    </div>
+                    <div class="radio-inline">
+                        <input type="radio" id="dir-outbound" name="callDirection" value="outbound">
+                        <label for="dir-outbound" class="radio-label">Outbound</label>
+                    </div>
+                </fieldset>
+                <div style="margin-bottom: 20px;">
+                    <label for="agent-name">Agent Name:</label>
+                    <input type="text" id="agent-name" placeholder="Enter your name">
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <label for="customer-name">Customer Name:</label>
+                    <input type="text" id="customer-name" placeholder="Enter customer name">
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <label for="customer-phone">Phone Number:</label>
+                    <input type="text" id="customer-phone" placeholder="Enter phone number">
+                </div>
+            </div>
+
+            <div id="step-outbound-intro" class="step outbound-only">
+                <h1>Outbound Introduction</h1>
+                <div class="spiel-box">
+                    <div class="spiel-text">
+                        <p>
+                            <span class="lang-es">Hola, ¿puedo hablar con <strong><span class="customer-name-display">[Customer]</span></strong>?</span>
+                            <span class="lang-en">Hi, may I speak with <strong><span class="customer-name-display">[Customer]</span></strong>?</span>
+                        </p>
+                        <p>
+                            <span class="lang-es"><em>(El cliente confirma su identidad)</em></span>
+                            <span class="lang-en"><em>(Caller confirms identity)</em></span>
+                        </p>
+                        <p>
+                            <span class="lang-es">¡Hola <strong><span class="customer-name-display">[Customer]</span></strong>! Le habla <strong><span class="agent-name-display">[Agent]</span></strong> de Servicio al Cliente de Foodie.</span>
+                            <span class="lang-en">Hi <strong><span class="customer-name-display">[Customer]</span></strong>! This is <strong><span class="agent-name-display">[Agent]</span></strong> calling from Foodie Customer Service.</span>
+                        </p>
+                        <p>
+                            <span class="lang-es">Me comunico porque expresó interés en nuestro Programa de Asistencia Alimentaria SCN, ¡o porque perdimos una llamada de este número antes! A través de este programa, los hogares elegibles reciben una caja gratuita de comidas listas para consumir en su puerta cada semana.</span>
+                            <span class="lang-en">I'm reaching out because you expressed interest in our SCN Food Assistance Program—or we missed a call from this number earlier! Through this program, eligible households get a free box of ready-to-eat meals delivered right to their door every single week.</span>
+                        </p>
+                        <p>
+                            <span class="lang-es">¿Tiene unos 3 a 4 minutos en este momento para que podamos completar su rápida solicitud juntos?</span>
+                            <span class="lang-en">Do you have about 3 to 4 minutes right now so we can complete your quick application together?</span>
+                        </p>
+                    </div>
+                </div>
+                
+                <fieldset id="outbound-response-group">
+                    <legend>Did they agree to proceed?</legend>
+                    <div class="radio-inline">
+                        <input type="radio" id="out-resp-yes" name="outboundResponse" value="yes">
+                        <label for="out-resp-yes" class="radio-label">Yes</label>
+                    </div>
+                    <div class="radio-inline">
+                        <input type="radio" id="out-resp-no" name="outboundResponse" value="no">
+                        <label for="out-resp-no" class="radio-label">No / Busy</label>
+                    </div>
+                    <div class="radio-inline">
+                        <input type="radio" id="out-resp-dnc" name="outboundResponse" value="dnc">
+                        <label for="out-resp-dnc" class="radio-label">Not Interested</label>
+                    </div>
+                </fieldset>
+            </div>
+
+            <div id="step-outbound-rejection" class="step">
+                <h1>Call Disposition</h1>
+                <div class="spiel-box" id="box-outbound-no" style="display: none;">
+                    <div class="spiel-text">
+                        <p>
+                            <span class="lang-es">¡No hay ningún problema! ¿Cuándo sería un mejor momento para devolverle la llamada hoy o mañana?</span>
+                            <span class="lang-en">No problem at all! When would be a better time for me to call you back today or tomorrow?</span>
+                        </p>
+                    </div>
+                    <div class="instruction-box">Log callback time in the system and update your notes.</div>
+                </div>
+                <div class="spiel-box" id="box-outbound-dnc" style="display: none;">
+                    <div class="spiel-text">
+                        <p>
+                            <span class="lang-es">¡Lo entiendo completamente! ¡Muchas gracias por su tiempo y que tenga un excelente día!</span>
+                            <span class="lang-en">I completely understand! Thank you so much for your time, and have a wonderful day!</span>
+                        </p>
+                    </div>
+                    <div class="instruction-box">Log as Not Interested / Close out lead.</div>
+                </div>
+            </div>
+
+            <div id="step-main-flow" class="step active">
+                <div class="spiel-box">
+                    <h2 class="step-title lang-en">Step 1: Opening & Household Count</h2>
+                    <h2 class="step-title lang-es">Paso 1: Apertura y Recuento del Hogar</h2>
+                    <div class="spiel-text">
+                        <p class="inbound-only">
+                            <span class="lang-es">Servicio al Cliente de Foodie, ¿en qué le puedo ayudar hoy?</span>
+                            <span class="lang-en">Foodie Customer Service, how can I help you today?</span>
+                        </p>
+                        <p class="inbound-only">
+                            <span class="lang-es">¡Me encantaría ayudarle con eso! A través de nuestro programa, los hogares elegibles reciben una caja gratuita de comidas listas para consumir entregadas directamente en su puerta cada semana.</span>
+                            <span class="lang-en">I’d love to help you with that! Through our program, eligible households receive a free box of ready-to-eat meals delivered right to their door every week.</span>
+                        </p>
+                        <p>
+                            <span class="lang-es">Para comenzar con su solicitud, ¿cuántos miembros del hogar en total tienen Medicaid?</span>
+                            <span class="lang-en">To get started on your application, how many household members total are on Medicaid?</span>
+                        </p>
+                    </div>
+                    
+                    <fieldset class="user-input-group">
+                        <div class="radio-inline"><input type="radio" id="hh-1" name="hhCount" value="1"><label for="hh-1" class="radio-label">1</label></div>
+                        <div class="radio-inline"><input type="radio" id="hh-2" name="hhCount" value="2"><label for="hh-2" class="radio-label">2</label></div>
+                        <div class="radio-inline"><input type="radio" id="hh-3" name="hhCount" value="3"><label for="hh-3" class="radio-label">3</label></div>
+                        <div class="radio-inline"><input type="radio" id="hh-4" name="hhCount" value="4"><label for="hh-4" class="radio-label">4</label></div>
+                        <div class="radio-inline"><input type="radio" id="hh-5" name="hhCount" value="5"><label for="hh-5" class="radio-label">5</label></div>
+                        <div class="radio-inline"><input type="radio" id="hh-6" name="hhCount" value="6"><label for="hh-6" class="radio-label">6</label></div>
+                        <div class="radio-inline"><input type="radio" id="hh-7" name="hhCount" value="7"><label for="hh-7" class="radio-label">7</label></div>
+                        <div class="radio-inline"><input type="radio" id="hh-8" name="hhCount" value="8"><label for="hh-8" class="radio-label">8</label></div>
+                    </fieldset>
+                </div>
+                
+                <div class="spiel-box">
+                    <h2 class="step-title lang-en">Step 2: Household Members Loop</h2>
+                    <h2 class="step-title lang-es">Paso 2: Miembros del Hogar</h2>
+                    <div class="instruction-box lang-en">Repeat this exact sequence for Household Member 1 up to Member 7 as needed.</div>
+                    <div class="instruction-box lang-es">Repita esta secuencia exacta para el Miembro 1 hasta el Miembro 7 según sea necesario.</div>
+                    
+                    <div class="spiel-text" style="border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
+                        <p>
+                            <span class="lang-es">¡Genial! Completemos los detalles de cada miembro del hogar que tiene Medicaid.</span>
+                            <span class="lang-en">Great! Let's fill in the details for each household member on Medicaid.</span>
+                        </p>
+                        <p>
+                            <span class="lang-es"><strong>1.</strong> ¿Cuál es el nombre y apellido legal del miembro del hogar tal como aparece en sus documentos oficiales?</span>
+                            <span class="lang-en"><strong>1.</strong> What is the Legal First Name and Last Name for household member as it appears on their official documents?</span>
+                        </p>
+                    </div>
+                    <div class="user-input-group row-inputs">
+                        <input type="text" id="member-fname" placeholder="First Name">
+                        <input type="text" id="member-lname" placeholder="Last Name">
+                    </div>
+
+                    <div class="spiel-text" style="border-radius: 0; margin-top: -10px;">
+                        <p>
+                            <span class="lang-es"><strong>2.</strong> ¿Cuál es su fecha de nacimiento?</span>
+                            <span class="lang-en"><strong>2.</strong> What is their Date of Birth?</span>
+                        </p>
+                    </div>
+                    <div class="user-input-group">
+                        <input type="date" id="member-dob" title="Date of Birth">
+                    </div>
+
+                    <div class="spiel-text" style="border-radius: 0; margin-top: -10px;">
+                        <p>
+                            <span class="lang-es"><strong>3.</strong> ¿Tienen Medicaid?</span>
+                            <span class="lang-en"><strong>3.</strong> Do they have Medicaid?</span>
+                        </p>
+                    </div>
+                    <fieldset class="user-input-group">
+                        <div class="radio-inline"><input type="radio" id="med-yes" name="memberMedicaid" value="Yes"><label for="med-yes" class="radio-label">Yes</label></div>
+                        <div class="radio-inline"><input type="radio" id="med-no" name="memberMedicaid" value="No"><label for="med-no" class="radio-label">No</label></div>
+                    </fieldset>
+
+                    <div id="cin-container" style="display: none;">
+                        <div class="spiel-text" style="border-radius: 0; margin-top: -10px;">
+                            <p>
+                                <span class="lang-es"><strong>4.</strong> <em>(Si es SÍ)</em> ¿Tiene a mano su número de identificación (CIN) de Medicaid? Tiene 2 letras, 5 números y 1 letra (como WD12344Y). Si no lo tiene, no se preocupe, es opcional y podemos buscarlo en el sistema.</span>
+                                <span class="lang-en"><strong>4.</strong> <em>(If Yes)</em> Do you have their Medicaid CIN Number handy? It has 2 letters, 5 numbers, and 1 letter (like WD12344Y). If not, no worries—it’s optional and we can look them up in our system.</span>
+                            </p>
+                        </div>
+                        <div class="user-input-group">
+                            <input type="text" id="member-cin" placeholder="CIN Number (Optional)">
+                        </div>
+                    </div>
+
+                    <div class="spiel-text" style="border-top-left-radius: 0; border-top-right-radius: 0; margin-top: -10px;">
+                        <p>
+                            <span class="lang-es"><strong>5.</strong> ¿Están actualmente embarazadas o en posparto (bebé menor de 12 meses)?</span>
+                            <span class="lang-en"><strong>5.</strong> Are they currently pregnant or postpartum (baby under 12 months old)?</span>
+                        </p>
+                    </div>
+                    <fieldset class="user-input-group">
+                        <div class="radio-inline"><input type="radio" id="preg-yes" name="memberPreg" value="Yes"><label for="preg-yes" class="radio-label">Yes</label></div>
+                        <div class="radio-inline"><input type="radio" id="preg-no" name="memberPreg" value="No"><label for="preg-no" class="radio-label">No</label></div>
+                    </fieldset>
+
+                    <div id="preg-response-yes" class="spiel-text" style="display: none;">
+                        <p>
+                            <span class="lang-es"><em>Si es SÍ:</em> ¡Son excelentes noticias! Cualquier persona actualmente embarazada o en posparto tiene el 100% de garantía de calificar, y no se requiere prueba de embarazo.</span>
+                            <span class="lang-en"><em>If YES:</em> That’s wonderful news! Anyone currently pregnant or postpartum is 100% guaranteed to qualify, and no proof of pregnancy is required.</span>
+                        </p>
+                    </div>
+                    
+                    <div id="preg-response-no" class="spiel-text" style="display: none;">
+                        <p>
+                            <span class="lang-es"><em>Si es NO:</em> ¡Entendido! Los solicitantes que no están embarazadas aún pueden calificar según los requisitos generales del programa.</span>
+                            <span class="lang-en"><em>If NO:</em> Got it! Non-pregnant applicants may still qualify based on overall program requirements.</span>
+                        </p>
+                    </div>
+
+                    <div style="margin-top: 20px;">
+                        <button id="btn-add-member" style="background-color: #2e7d32; width: 100%; font-size: 1.1em; padding: 12px; border-radius: 6px;">➕ Add Member</button>
+                    </div>
+                </div>
+                
+                <div class="spiel-box">
+                    <h2 class="step-title lang-en">Step 3: Contact Details & Delivery Address</h2>
+                    <h2 class="step-title lang-es">Paso 3: Detalles de Contacto y Entrega</h2>
+                    <div class="spiel-text">
+                        <p>
+                            <span class="lang-es">¡Gracias! A continuación, permítame verificar sus detalles de contacto y dirección de entrega:</span>
+                            <span class="lang-en">Thank you! Next, let me verify your contact and delivery address details:</span>
+                        </p>
+                        <p class="inbound-only">
+                            <span class="lang-es">¿Cuál es el mejor número de teléfono para comunicarnos con usted?</span>
+                            <span class="lang-en">What is the best phone number to reach you at?</span>
+                        </p>
+                        <p class="outbound-only">
+                            <span class="lang-es">¿Es el <strong><span class="phone-display">[Phone]</span></strong> el mejor número de teléfono para comunicarnos con usted, o prefiere algún otro número?</span>
+                            <span class="lang-en">Is <strong><span class="phone-display">[Phone]</span></strong> the best phone number to reach you at, or is there another number you prefer?</span>
+                        </p>
+                        <p>
+                            <span class="lang-es">¿Cuál es su correo electrónico principal?</span>
+                            <span class="lang-en">What is your primary email address?</span>
+                        </p>
+                        <p>
+                            <span class="lang-es">¿Cuál es su dirección completa, incluyendo número de apartamento, unidad o piso, y su código postal?</span>
+                            <span class="lang-en">What is your full street address, including any apartment, unit, or floor number, and your zip code?</span>
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="spiel-box">
+                    <h2 class="step-title lang-en">Step 4: Language Preference</h2>
+                    <h2 class="step-title lang-es">Paso 4: Preferencia de Idioma</h2>
+                    <div class="spiel-text">
+                        <p>
+                            <span class="lang-es">¿Qué idioma prefiere hablar para futuras llamadas y actualizaciones? <em>(Español, Ruso, Árabe, Chino, Inglés u Otro)</em></span>
+                            <span class="lang-en">What language do you prefer to speak for future calls and updates? <em>(Spanish, Russian, Arabic, Chinese, English, or Other)</em></span>
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="spiel-box">
+                    <h2 class="step-title lang-en">Step 5: Household Benefits</h2>
+                    <h2 class="step-title lang-es">Paso 5: Beneficios del Hogar</h2>
+                    <div class="spiel-text">
+                        <p>
+                            <span class="lang-es">¿Su hogar recibe actualmente WIC o Cupones de Alimentos (SNAP)?</span>
+                            <span class="lang-en">Does your household currently receive WIC or Food Stamps (SNAP)?</span>
+                        </p>
+                        <p>
+                            <span class="lang-es"><em>(Si es SÍ)</em> ¿Cuál recibe: Cupones de Alimentos, WIC o ambos?</span>
+                            <span class="lang-en"><em>(If YES)</em> Which one do you receive—Food Stamps, WIC, or both?</span>
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="spiel-box">
+                    <h2 class="step-title lang-en">Step 6: Housing Assistance</h2>
+                    <h2 class="step-title lang-es">Paso 6: Asistencia de Vivienda</h2>
+                    <div class="spiel-text">
+                        <p>
+                            <span class="lang-es">¿Su hogar recibe asistencia de vivienda de la Sección 8?</span>
+                            <span class="lang-en">Does your household receive Section 8 housing assistance?</span>
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="spiel-box">
+                    <h2 class="step-title lang-en">Step 7: Household Employment</h2>
+                    <h2 class="step-title lang-es">Paso 7: Empleo del Hogar</h2>
+                    <div class="spiel-text">
+                        <p>
+                            <span class="lang-es">¿Alguien en su hogar trabaja actualmente?</span>
+                            <span class="lang-en">Does anyone in your household currently work?</span>
+                        </p>
+                        <p>
+                            <span class="lang-es"><em>(Si es SÍ)</em> ¿Quién trabaja actualmente?</span>
+                            <span class="lang-en"><em>(If YES)</em> Who currently works?</span>
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="spiel-box">
+                    <h2 class="step-title lang-en">Step 8: Meal Preference & Closing</h2>
+                    <h2 class="step-title lang-es">Paso 8: Preferencia de Comidas y Cierre</h2>
+                    <div class="spiel-text">
+                        <p>
+                            <span class="lang-es">¡Ahora viene la mejor parte: las comidas! Nuestro programa principal envía una caja de deliciosas comidas frescas y listas para consumir directamente a su puerta cada semana, precocinadas y sin tiempo de preparación. A la mayoría de las personas les encantan, pero también podemos solicitar alimentos crudos (groceries) si lo prefiere. ¿Le gustarían comidas listas para consumir o alimentos crudos (groceries)?</span>
+                            <span class="lang-en">Now for the fun part—the meals! Our main program sends a box of delicious, fresh, ready-to-eat meals right to your door every week—pre-cooked with zero prep time. Most people love these, but we can also request groceries if you prefer. Would you like ready-to-eat meals or groceries?</span>
+                        </p>
+                        <p>
+                            <span class="lang-es">¡Todo listo! He enviado oficialmente su solicitud a nuestro sistema. Esto es lo que sucederá a continuación:</span>
+                            <span class="lang-en">All set! I’ve officially submitted your application into our system. Here’s what happens next:</span>
+                        </p>
+                        <p>
+                            <span class="lang-es"><strong>1. Llamada de evaluación:</strong> Alguien de nuestro equipo le llamará en unos días para un breve cuestionario de 2 minutos.</span>
+                            <span class="lang-en"><strong>1. Screening Call:</strong> Someone from our team will give you a brief call in a few days for a quick 2-minute questionnaire.</span>
+                        </p>
+                        <p>
+                            <span class="lang-es"><strong>2. Revisión:</strong> El proceso de revisión toma 2 días hábiles.</span>
+                            <span class="lang-en"><strong>2. Review:</strong> The review process takes 2 business days.</span>
+                        </p>
+                        <p>
+                            <span class="lang-es"><strong>3. Confirmación:</strong> Una vez aprobada, le llamaremos y enviaremos un correo para confirmar.</span>
+                            <span class="lang-en"><strong>3. Confirmation:</strong> Once approved, we’ll call and email you to confirm.</span>
+                        </p>
+                        <p>
+                            <span class="lang-es"><strong>4. Entregas:</strong> ¡Sus cajas de comida semanales comenzarán a llegar poco después de eso!</span>
+                            <span class="lang-en"><strong>4. Deliveries:</strong> Your weekly food boxes will start coming right after that!</span>
+                        </p>
+                        <p>
+                            <span class="lang-es">Si alguna vez necesita verificar su estado, puede visitar foodieonus.com. ¡Muchas gracias por su tiempo hoy, que tenga un excelente resto del día!</span>
+                            <span class="lang-en">If you ever need to check your status, you can visit foodieonus.com. Thank you so much for your time today, have a wonderful rest of your day!</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 20px;">
+                <button id="btn-restart">Restart Workflow</button>
+            </div>
+        </div>
+
+        <div id="right-sidebar">
+            <h2>Knowledge Base</h2>
+            <input type="text" id="global-search" placeholder="Search knowledge..." autocomplete="off">
+            <div id="right-sidebar-scroll">
+                <div id="search-results"></div>
+                <div id="ready-spiels">
+                    <h2 style="margin-top: 20px; font-size: 1.2em; color: #f57c00; border-bottom: 2px solid #ffe0b2; padding-bottom: 10px;">Ready Spiels</h2>
+                    
+                    <div class="spiel-item">
+                        <strong>¿Para qué? ¿Quién habla? (What are you?)</strong>
+                        <div class="spiel-content">
+                            <p>Servicio al Cliente de Foodie. Somos un programa de asistencia alimentaria diseñado para ayudar a personas y familias elegibles. Podemos verificar su información para ver si puede precalificar.</p>
+                            <p class="en-translation">Foodie Customer Service. We are a food assistance program designed to help eligible individuals and families. We can check your information to see if you may pre-qualify.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="spiel-item">
+                        <strong>¿De qué? ¿De dónde? (Where are you located?)</strong>
+                        <div class="spiel-content">
+                            <p>Trabajamos de forma remota. Aunque no tenemos una oficina pública para visitas en persona, siempre puede contactarnos aquí o por correo electrónico en foodieonus.com.</p>
+                            <p class="en-translation">We are located remotely. While we don't have a public office address for walk-ins, you can always reach us here on email at foodieonus.com.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="spiel-item">
+                        <strong>¿Elegibilidad? ¿Qué hago para calificar? (Eligibility? How to qualify?)</strong>
+                        <div class="spiel-content">
+                            <p>Comenzaremos haciendo una verificación de precalificación, pero uno de los requisitos clave es tener cobertura activa de Medicaid.</p>
+                            <p class="en-translation">We'll start by doing a pre-qualification check, but one of the key requirements is having active Medicaid coverage.</p>
+                        </div>
+                    </div>
+
+                    <div class="spiel-item">
+                        <strong>Llamadas Fantasma (Ghost Spiels)</strong>
+                        <div class="spiel-content">
+                            <p><strong>I. Primera verificación:</strong><br>Hola, le habla el Servicio al Cliente de Foodie. Tengo problemas para escucharle. ¿Sigue en la línea? <em>(Espere 5-7 segundos)</em></p>
+                            <p class="en-translation"><strong>I. First Check:</strong><br>Hello, this is Foodie Customer Service. I am having trouble hearing you. Are you still on the line? (Wait 5-7 seconds)</p>
+                            
+                            <p style="margin-top: 10px;"><strong>II. Segunda verificación:</strong><br>Hola, sigo sin poder escucharle. Si está hablando, es posible que su teléfono esté en silencio. <em>(Espere 5-7 segundos)</em></p>
+                            <p class="en-translation"><strong>II. Second Check:</strong><br>Hello, I am still unable to hear you. If you are speaking, your phone might be on mute. (Wait 5-7 seconds)</p>
+                            
+                            <p style="margin-top: 10px;"><strong>III. Desconexión:</strong><br>Como no puedo escucharle, tendré que desconectar esta llamada. Por favor, devuélvanos la llamada para que podamos ayudarle con su solicitud de comidas, o visite foodieonus.com. ¡Gracias y que tenga un excelente día!</p>
+                            <p class="en-translation"><strong>III. Call Disconnect:</strong><br>Since I cannot hear you, I will need to disconnect this call. Please call us back so we can help you with your meal application, or visit foodieonus.com. Thank you, and have a great day!</p>
+                        </div>
+                    </div>
+                    
+                    <div class="spiel-item">
+                        <strong>Mensaje de Voz (Voicemail)</strong>
+                        <div class="spiel-content">
+                            <p>Hola, le llamamos del Servicio al Cliente de Foodie. Nos comunicamos para ayudarle con el programa de asistencia alimentaria y ver si puede precalificar. Por favor, devuélvanos la llamada al [Insertar número de teléfono] cuando le sea posible. ¡Gracias y que tenga un excelente día!</p>
+                            <p class="en-translation">Hello, this is calling from Foodie Customer Service. We are reaching out to help you with the food assistance program and see if you may pre-qualify. Please give us a call back at [Insert Phone Number] at your earliest convenience. Thank you, and have a wonderful day!</p>
+                        </div>
+                    </div>
+                    
+                    <div class="spiel-item">
+                        <strong>Seguimiento de solicitud incompleta (Callback / Incomplete)</strong>
+                        <div class="spiel-content">
+                            <p>Hola, le devuelvo la llamada del Servicio al Cliente de Foodie. Nos comunicamos para ayudarle con el programa de asistencia alimentaria y ver si puede precalificar. ¿Está disponible para hablar en este momento?</p>
+                            <p class="en-translation">Hello, I'm calling back from Foodie Customer Service. We are reaching out to help you with the food assistance program and see if you may pre-qualify. Are you available to speak right now?</p>
+                        </div>
+                    </div>
+                    
+                    <div class="spiel-item">
+                        <strong>Devolución de llamada perdida/desconectada (Missed / Disconnected Call)</strong>
+                        <div class="spiel-content">
+                            <p>Hola, soy [Su Nombre] y le devuelvo la llamada del Servicio al Cliente de Foodie. Parece que perdimos su llamada. Me encantaría ayudarle con el programa de asistencia alimentaria y ver si puede precalificar. ¿Está disponible para hablar en este momento?</p>
+                            <p class="en-translation">Hello, this is [Your Name] calling back from Foodie Customer Service. It looks like we missed your call. I’d love to help you with the food assistance program and see if you may pre-qualify. Are you available to speak right now?</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="drawer-overlay"></div>
+    
+    <!-- Template for adding member securely without JS innerHTML -->
+    <template id="member-template">
+        <div class="sidebar-item sidebar-member" style="margin-bottom: 10px; background: #fff3e0; border-radius: 6px; border-left: 4px solid #f57c00; box-shadow: 0 1px 3px rgba(0,0,0,0.1); overflow: hidden;">
+            <div class="member-header" style="padding: 10px 12px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none;">
+                <strong class="member-name" style="color: #e65100; font-size: 0.95em; margin: 0;"></strong>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <span class="btn-delete-member" style="color: #d32f2f; font-size: 1.3em; font-weight: bold; line-height: 1;" title="Remove Member">&times;</span>
+                    <span class="member-caret" style="font-size: 0.8em; color: #f57c00; transition: transform 0.2s;">▶</span>
+                </div>
+            </div>
+            <div class="member-details" style="display: none; padding: 0 12px 12px; font-size: 0.85em; color: #424242; line-height: 1.5; border-top: 1px solid #ffe0b2;">
+                <strong>DOB:</strong> <span class="member-dob"></span><br>
+                <strong>Medicaid:</strong> <span class="member-med"></span><br>
+                <strong>CIN:</strong> <span class="member-cin"></span><br>
+                <strong>Preg/Post:</strong> <span class="member-preg"></span>
+            </div>
+        </div>
+    </template>
+
+    <button id="btn-toggle-info" class="mobile-fab left-fab">ℹ️</button>
+    <button id="btn-toggle-search" class="mobile-fab right-fab">🔍</button>
+
+    <script src="script.js"></script>
+</body>
+</html>
