@@ -16,7 +16,8 @@
             <a href="https://docs.google.com/forms/d/e/1FAIpQLSdHWwuMufXeGi9G8eXy4UKdD9lKm-rjRwOcEmkZAgnUZ3Duig/viewform" target="_blank" class="header-btn">Website Spanish Form</a>
             <a href="https://docs.google.com/forms/d/e/1FAIpQLSenp0QkS4UlOq_iO8cPl632tafRofcWxW4xW6YgrbtB_W37nQ/viewform" target="_blank" class="header-btn">NEW INTAKE Form</a>
         </div>
-        <div style="flex: 1; display: flex; justify-content: flex-end;">
+        <div style="flex: 1; display: flex; justify-content: flex-end; gap: 10px;">
+            <button id="btn-tts-settings" style="background-color: #0288d1; margin: 0; padding: 10px;">⚙️ TTS</button>
             <button id="btn-new-session" style="background-color: #2e7d32; margin: 0;">🔄 New Session</button>
         </div>
     </div>
@@ -348,8 +349,23 @@
                 </div>
                 
                 <div class="spiel-box">
-                    <h2 class="step-title lang-en">Step 8: Meal Preference & Closing</h2>
-                    <h2 class="step-title lang-es">Paso 8: Preferencia de Comidas y Cierre</h2>
+                    <h2 class="step-title lang-en">Step 8: How did you hear about us?</h2>
+                    <h2 class="step-title lang-es">Paso 8: ¿Cómo se enteró de nosotros?</h2>
+                    <div class="spiel-text">
+                        <p>
+                            <span class="lang-es">¿Cómo se enteró de nuestro programa?</span>
+                            <span class="lang-en">How did you hear about our program?</span>
+                        </p>
+                        <p>
+                            <span class="lang-es"><em>(Si fue por un folleto)</em> ¿Cuál es el número en la parte inferior derecha del folleto? (es un número muy pequeño y se encuentra en la esquina inferior derecha del folleto).</span>
+                            <span class="lang-en"><em>(IF Flyer)</em> What's the number on the bottom right side of the flyer (it's a very small number, and it's located on the bottom right corner of the flyer)?</span>
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="spiel-box">
+                    <h2 class="step-title lang-en">Step 9: Meal Preference & Closing</h2>
+                    <h2 class="step-title lang-es">Paso 9: Preferencia de Comidas y Cierre</h2>
                     <div class="spiel-text">
                         <p>
                             <span class="lang-es">¡Ahora viene la mejor parte: las comidas! Nuestro programa principal envía una caja de deliciosas comidas frescas y listas para consumir directamente a su puerta cada semana, precocinadas y sin tiempo de preparación. A la mayoría de las personas les encantan, pero también podemos solicitar alimentos crudos (groceries) si lo prefiere. ¿Le gustarían comidas listas para consumir o alimentos crudos (groceries)?</span>
@@ -512,6 +528,29 @@
     </div>
     
     <div id="drawer-overlay"></div>
+
+    <div id="tts-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 style="margin-top: 0; color: #0288d1; border-bottom: 2px solid #b3e5fc; padding-bottom: 10px;">TTS Settings</h3>
+            
+            <div style="margin-bottom: 15px;">
+                <label for="tts-voice">Voice Profile:</label>
+                <select id="tts-voice" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;"></select>
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <label for="tts-pitch">Pitch (Tone): <span id="pitch-val">1.0</span></label>
+                <input type="range" id="tts-pitch" min="0.1" max="2.0" step="0.1" value="1.0" style="width: 100%;">
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <label for="tts-rate">Speed: <span id="rate-val">0.9</span></label>
+                <input type="range" id="tts-rate" min="0.5" max="1.5" step="0.1" value="0.9" style="width: 100%;">
+            </div>
+            
+            <button id="btn-close-tts" style="background-color: #0288d1; width: 100%; margin: 0;">Close & Save</button>
+        </div>
+    </div>
     
     <!-- Template for adding member securely without JS innerHTML -->
     <template id="member-template">

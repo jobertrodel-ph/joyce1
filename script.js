@@ -498,6 +498,7 @@ function performSearch() {
         let textToHighlight = item.text.replace(/\[Agent\]/g, currentAgent).replace(/\[Phone\]/g, currentPhone);
         
         // Render lines, applying translation CSS if marked with [EN]
+        const hasSpanish = item.text.includes('[EN]');
         const lines = textToHighlight.split('\n');
         lines.forEach(function(line) {
             if (line === '') {
@@ -510,6 +511,9 @@ function performSearch() {
                 line = line.substring(4);
             } else {
                 lineElem.style.marginBottom = '6px';
+                if (hasSpanish) {
+                    lineElem.classList.add('lang-es');
+                }
             }
             appendHighlighted(lineElem, line, query);
             textElem.appendChild(lineElem);
@@ -520,6 +524,10 @@ function performSearch() {
 
         searchResultsContainer.appendChild(container);
     });
+
+    if (typeof initTTSButtons === 'function') {
+        initTTSButtons();
+    }
 }
 
 globalSearchInput.addEventListener('input', performSearch);
@@ -560,6 +568,117 @@ document.querySelectorAll('.spiel-item strong').forEach(function(title) {
     });
 });
 
+// --- Text-to-Speech (TTS) Feature ---
+let voices = [];
+const voiceSelect = document.getElementById('tts-voice');
+const pitchInput = document.getElementById('tts-pitch');
+const rateInput = document.getElementById('tts-rate');
+const pitchVal = document.getElementById('pitch-val');
+const rateVal = document.getElementById('rate-val');
+const ttsModal = document.getElementById('tts-modal');
+const btnTtsSettings = document.getElementById('btn-tts-settings');
+const btnCloseTts = document.getElementById('btn-close-tts');
+
+function populateVoiceList() {
+    voices = window.speechSynthesis.getVoices();
+    voiceSelect.innerHTML = '';
+    
+    const spanishVoices = voices.filter(voice => voice.lang.startsWith('es'));
+    
+    if (spanishVoices.length === 0) {
+        const option = document.createElement('option');
+        option.textContent = 'No Spanish voices found - using default';
+        voiceSelect.appendChild(option);
+        return;
+    }
+
+    spanishVoices.forEach((voice, i) => {
+        const option = document.createElement('option');
+        option.textContent = `${voice.name} (${voice.lang})`;
+        option.value = i;
+        voiceSelect.appendChild(option);
+    });
+}
+
+if ('speechSynthesis' in window) {
+    populateVoiceList();
+    if (speechSynthesis.onvoiceschanged !== undefined) {
+        speechSynthesis.onvoiceschanged = populateVoiceList;
+    }
+}
+
+pitchInput.addEventListener('input', () => {
+    pitchVal.textContent = pitchInput.value;
+});
+
+rateInput.addEventListener('input', () => {
+    rateVal.textContent = rateInput.value;
+});
+
+btnTtsSettings.addEventListener('click', () => {
+    ttsModal.classList.add('show');
+});
+
+btnCloseTts.addEventListener('click', () => {
+    ttsModal.classList.remove('show');
+});
+
+function playTTS(text, lang = 'es-US') {
+    if (!('speechSynthesis' in window)) {
+        alert('Sorry, your browser does not support text-to-speech.');
+        return;
+    }
+    
+    window.speechSynthesis.cancel();
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = lang;
+    utterance.pitch = parseFloat(pitchInput.value);
+    utterance.rate = parseFloat(rateInput.value);
+    
+    const selectedVoiceIndex = voiceSelect.value;
+    const spanishVoices = voices.filter(v => v.lang.startsWith('es'));
+    
+    if (spanishVoices.length > 0 && selectedVoiceIndex !== '') {
+        utterance.voice = spanishVoices[selectedVoiceIndex];
+    }
+    
+    window.speechSynthesis.speak(utterance);
+}
+
+function initTTSButtons() {
+    const spanishElements = document.querySelectorAll('.lang-es, .spiel-content p:not(.en-translation)');
+    
+    spanishElements.forEach(el => {
+        if (el.querySelector('.tts-btn')) return;
+
+        const ttsBtn = document.createElement('span');
+        ttsBtn.className = 'tts-btn';
+        ttsBtn.title = 'Listen to pronunciation';
+        ttsBtn.innerHTML = '🔊';
+        
+        ttsBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const clone = el.cloneNode(true);
+            const btnToRemove = clone.querySelector('.tts-btn');
+            if (btnToRemove) clone.removeChild(btnToRemove);
+            
+            const textToRead = clone.textContent.trim();
+            playTTS(textToRead, 'es-US');
+            
+            ttsBtn.style.transform = 'scale(1.3)';
+            setTimeout(() => {
+                ttsBtn.style.transform = 'scale(1)';
+            }, 200);
+        });
+
+        el.appendChild(ttsBtn);
+    });
+}
+
 // Initialize
 updateDynamicText();
 evaluateWorkflow();
+initTTSButtons();
