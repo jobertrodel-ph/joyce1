@@ -451,6 +451,55 @@ button:hover {
     transform: scale(1.1);
 }
 
+/* --- Alfabeto Settings & Grid --- */
+#btn-alfabeto:hover {
+    background-color: #4a148c !important;
+}
+
+#alfabeto-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 12px;
+}
+
+.alfabeto-item {
+    background-color: #f3e5f5;
+    border: 2px solid #e1bee7;
+    border-radius: 8px;
+    padding: 15px 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+}
+
+.alfabeto-item:hover {
+    background-color: #e1bee7;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(106, 27, 154, 0.2);
+}
+
+.alfabeto-item:active {
+    transform: scale(0.95);
+}
+
+.alfabeto-letter {
+    font-size: 1.8em;
+    font-weight: bold;
+    color: #4a148c;
+    margin-bottom: 5px;
+}
+
+.alfabeto-pronunciation {
+    font-size: 0.9em;
+    color: #7b1fa2;
+    font-style: italic;
+}
+
 /* --- Modal Styles --- */
 .modal-overlay {
     display: none;

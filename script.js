@@ -579,6 +579,60 @@ const ttsModal = document.getElementById('tts-modal');
 const btnTtsSettings = document.getElementById('btn-tts-settings');
 const btnCloseTts = document.getElementById('btn-close-tts');
 
+// Alfabeto Elements
+const btnAlfabeto = document.getElementById('btn-alfabeto');
+const modalAlfabeto = document.getElementById('alfabeto-modal');
+const btnCloseAlfabeto = document.getElementById('btn-close-alfabeto');
+const alfabetoGrid = document.getElementById('alfabeto-grid');
+
+const alfabetoData = [
+    { letter: 'A', name: 'a' }, { letter: 'B', name: 'be' }, { letter: 'C', name: 'ce' },
+    { letter: 'D', name: 'de' }, { letter: 'E', name: 'e' }, { letter: 'F', name: 'efe' },
+    { letter: 'G', name: 'ge' }, { letter: 'H', name: 'hache' }, { letter: 'I', name: 'i' },
+    { letter: 'J', name: 'jota' }, { letter: 'K', name: 'ka' }, { letter: 'L', name: 'ele' },
+    { letter: 'M', name: 'eme' }, { letter: 'N', name: 'ene' }, { letter: 'Ñ', name: 'eñe' },
+    { letter: 'O', name: 'o' }, { letter: 'P', name: 'pe' }, { letter: 'Q', name: 'cu' },
+    { letter: 'R', name: 'erre' }, { letter: 'S', name: 'ese' }, { letter: 'T', name: 'te' },
+    { letter: 'U', name: 'u' }, { letter: 'V', name: 'uve' }, { letter: 'W', name: 'doble uve' },
+    { letter: 'X', name: 'equis' }, { letter: 'Y', name: 'i griega' }, { letter: 'Z', name: 'zeta' }
+];
+
+function renderAlfabeto() {
+    alfabetoGrid.innerHTML = '';
+    alfabetoData.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'alfabeto-item';
+        
+        const letterSpan = document.createElement('div');
+        letterSpan.className = 'alfabeto-letter';
+        letterSpan.textContent = item.letter;
+        
+        const pronunSpan = document.createElement('div');
+        pronunSpan.className = 'alfabeto-pronunciation';
+        pronunSpan.textContent = `/${item.name}/`;
+        
+        div.appendChild(letterSpan);
+        div.appendChild(pronunSpan);
+        
+        div.addEventListener('click', () => {
+            playTTS(item.name, 'es-US');
+        });
+        
+        alfabetoGrid.appendChild(div);
+    });
+}
+
+btnAlfabeto.addEventListener('click', () => {
+    if (alfabetoGrid.innerHTML === '') {
+        renderAlfabeto();
+    }
+    modalAlfabeto.classList.add('show');
+});
+
+btnCloseAlfabeto.addEventListener('click', () => {
+    modalAlfabeto.classList.remove('show');
+});
+
 function populateVoiceList() {
     voices = window.speechSynthesis.getVoices();
     voiceSelect.innerHTML = '';

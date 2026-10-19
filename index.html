@@ -17,6 +17,7 @@
             <a href="https://docs.google.com/forms/d/e/1FAIpQLSenp0QkS4UlOq_iO8cPl632tafRofcWxW4xW6YgrbtB_W37nQ/viewform" target="_blank" class="header-btn">NEW INTAKE Form</a>
         </div>
         <div style="flex: 1; display: flex; justify-content: flex-end; gap: 10px;">
+            <button id="btn-alfabeto" style="background-color: #6a1b9a; margin: 0; padding: 10px; transition: background-color 0.3s;">🔤 Alfabeto</button>
             <button id="btn-tts-settings" style="background-color: #0288d1; margin: 0; padding: 10px;">⚙️ TTS</button>
             <button id="btn-new-session" style="background-color: #2e7d32; margin: 0;">🔄 New Session</button>
         </div>
@@ -528,6 +529,16 @@
     </div>
     
     <div id="drawer-overlay"></div>
+
+    <div id="alfabeto-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 650px; max-height: 85vh; display: flex; flex-direction: column;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e1bee7; padding-bottom: 10px; margin-bottom: 15px;">
+                <h3 style="margin: 0; color: #6a1b9a;">Spanish Alphabet (Alfabeto)</h3>
+                <button id="btn-close-alfabeto" style="background: none; border: none; color: #6a1b9a; font-size: 1.8em; cursor: pointer; margin: 0; padding: 0; line-height: 1;">&times;</button>
+            </div>
+            <div id="alfabeto-grid" style="overflow-y: auto; padding-right: 5px; flex: 1;"></div>
+        </div>
+    </div>
 
     <div id="tts-modal" class="modal-overlay">
         <div class="modal-content">
