@@ -11,19 +11,31 @@
         <div style="flex: 1; display: flex; align-items: center;">
             <span class="header-title">🍴 Foodie Customer Service</span>
         </div>
-        <div style="flex: 1; display: flex; justify-content: center; gap: 15px;">
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLSeyxhKgF1w9IN4iW99_Ip67D4F1LsQklg0kZPendipj5t0gLA/viewform" target="_blank" class="header-btn">Website English Form</a>
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLSdHWwuMufXeGi9G8eXy4UKdD9lKm-rjRwOcEmkZAgnUZ3Duig/viewform" target="_blank" class="header-btn">Website Spanish Form</a>
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLSenp0QkS4UlOq_iO8cPl632tafRofcWxW4xW6YgrbtB_W37nQ/viewform" target="_blank" class="header-btn">NEW INTAKE Form</a>
-        </div>
-        <div style="flex: 1; display: flex; justify-content: flex-end; gap: 10px;">
-            <button id="btn-alfabeto" style="background-color: #6a1b9a; margin: 0; padding: 10px; transition: background-color 0.3s;">🔤 Alfabeto</button>
-            <button id="btn-tts-settings" style="background-color: #0288d1; margin: 0; padding: 10px;">⚙️ TTS</button>
-            <button id="btn-new-session" style="background-color: #2e7d32; margin: 0;">🔄 New Session</button>
+        <button id="btn-mobile-menu" class="mobile-menu-btn">☰</button>
+        <div id="header-nav-actions" class="header-nav-actions">
+            <div class="header-links">
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSeyxhKgF1w9IN4iW99_Ip67D4F1LsQklg0kZPendipj5t0gLA/viewform" target="_blank" class="header-btn">Website English Form</a>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSdHWwuMufXeGi9G8eXy4UKdD9lKm-rjRwOcEmkZAgnUZ3Duig/viewform" target="_blank" class="header-btn">Website Spanish Form</a>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSenp0QkS4UlOq_iO8cPl632tafRofcWxW4xW6YgrbtB_W37nQ/viewform" target="_blank" class="header-btn">NEW INTAKE Form</a>
+            </div>
+            <div class="header-tools">
+                <button id="btn-theme-toggle" class="tool-btn" style="background-color: #424242;">🌙 Dark Mode</button>
+                <button id="btn-alfabeto" class="tool-btn" style="background-color: #6a1b9a;">🔤 Alfabeto</button>
+                <button id="btn-tts-settings" class="tool-btn" style="background-color: #0288d1;">⚙️ TTS</button>
+                <button id="btn-new-session" class="tool-btn" style="background-color: #2e7d32;">🔄 New Session</button>
+            </div>
         </div>
     </div>
 
     <div id="main-wrapper">
+        <div id="alfabeto-sidebar">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e1bee7; padding-bottom: 8px; margin-bottom: 10px;">
+                <h3 style="margin: 0; color: #6a1b9a; font-size: 1.1em;">🔤 Alfabeto</h3>
+                <button id="btn-close-alfabeto" style="background: none; border: none; color: #6a1b9a; font-size: 1.4em; cursor: pointer; margin: 0; padding: 0; line-height: 1;" title="Close">&times;</button>
+            </div>
+            <div id="alfabeto-grid"></div>
+        </div>
+
         <div id="sidebar">
             <h2>Call Info</h2>
             <div class="sidebar-item">
@@ -49,12 +61,16 @@
                 <strong>Notes</strong>
                 <textarea id="call-notes" rows="12" placeholder="Type your application notes here..."></textarea>
                 <div style="display: flex; gap: 10px; margin-top: 10px;">
-                    <button id="btn-push-copy-notes" style="font-size: 0.8em; padding: 5px 10px; background-color: #f57c00; flex: 1;">📋 Copy Notes</button>
+                    <button id="btn-push-copy-notes" style="font-size: 0.8em; padding: 8px 10px; background-color: #f57c00; flex: 1;">📋 Compile & Copy Notes</button>
                 </div>
             </div>
         </div>
 
         <div id="app-container">
+            <div id="progress-container" title="Application Progress">
+                <div id="progress-bar"></div>
+            </div>
+
             <div id="step-setup" class="step active" style="margin-bottom: 25px;">
                 <h1>Call Setup</h1>
                 <fieldset id="language-group">
@@ -157,8 +173,7 @@
 
             <div id="step-main-flow" class="step active">
                 <div class="spiel-box">
-                    <h2 class="step-title lang-en">Step 1: Opening & Household Count</h2>
-                    <h2 class="step-title lang-es">Paso 1: Apertura y Recuento del Hogar</h2>
+                    <h2 class="step-title">Step 1: Opening & Household Count</h2>
                     <div class="spiel-text">
                         <p class="inbound-only">
                             <span class="lang-es">Servicio al Cliente de Foodie, ¿en qué le puedo ayudar hoy?</span>
@@ -187,10 +202,8 @@
                 </div>
                 
                 <div class="spiel-box">
-                    <h2 class="step-title lang-en">Step 2: Household Members Loop</h2>
-                    <h2 class="step-title lang-es">Paso 2: Miembros del Hogar</h2>
-                    <div class="instruction-box lang-en">Repeat this exact sequence for Household Member 1 up to Member 7 as needed.</div>
-                    <div class="instruction-box lang-es">Repita esta secuencia exacta para el Miembro 1 hasta el Miembro 7 según sea necesario.</div>
+                    <h2 class="step-title">Step 2: Household Members Loop</h2>
+                    <div class="instruction-box">Repeat this exact sequence for Household Member 1 up to Member 7 as needed.</div>
                     
                     <div class="spiel-text" style="border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
                         <p>
@@ -271,8 +284,7 @@
                 </div>
                 
                 <div class="spiel-box">
-                    <h2 class="step-title lang-en">Step 3: Contact Details & Delivery Address</h2>
-                    <h2 class="step-title lang-es">Paso 3: Detalles de Contacto y Entrega</h2>
+                    <h2 class="step-title">Step 3: Contact Details & Delivery Address</h2>
                     <div class="spiel-text">
                         <p>
                             <span class="lang-es">¡Gracias! A continuación, permítame verificar sus detalles de contacto y dirección de entrega:</span>
@@ -298,8 +310,7 @@
                 </div>
                 
                 <div class="spiel-box">
-                    <h2 class="step-title lang-en">Step 4: Language Preference</h2>
-                    <h2 class="step-title lang-es">Paso 4: Preferencia de Idioma</h2>
+                    <h2 class="step-title">Step 4: Language Preference</h2>
                     <div class="spiel-text">
                         <p>
                             <span class="lang-es">¿Qué idioma prefiere hablar para futuras llamadas y actualizaciones? <em>(Español, Ruso, Árabe, Chino, Inglés u Otro)</em></span>
@@ -309,8 +320,7 @@
                 </div>
                 
                 <div class="spiel-box">
-                    <h2 class="step-title lang-en">Step 5: Household Benefits</h2>
-                    <h2 class="step-title lang-es">Paso 5: Beneficios del Hogar</h2>
+                    <h2 class="step-title">Step 5: Household Benefits</h2>
                     <div class="spiel-text">
                         <p>
                             <span class="lang-es">¿Su hogar recibe actualmente WIC o Cupones de Alimentos (SNAP)?</span>
@@ -324,8 +334,7 @@
                 </div>
                 
                 <div class="spiel-box">
-                    <h2 class="step-title lang-en">Step 6: Housing Assistance</h2>
-                    <h2 class="step-title lang-es">Paso 6: Asistencia de Vivienda</h2>
+                    <h2 class="step-title">Step 6: Housing Assistance</h2>
                     <div class="spiel-text">
                         <p>
                             <span class="lang-es">¿Su hogar recibe asistencia de vivienda de la Sección 8?</span>
@@ -335,8 +344,7 @@
                 </div>
                 
                 <div class="spiel-box">
-                    <h2 class="step-title lang-en">Step 7: Household Employment</h2>
-                    <h2 class="step-title lang-es">Paso 7: Empleo del Hogar</h2>
+                    <h2 class="step-title">Step 7: Household Employment</h2>
                     <div class="spiel-text">
                         <p>
                             <span class="lang-es">¿Alguien en su hogar trabaja actualmente?</span>
@@ -350,23 +358,32 @@
                 </div>
                 
                 <div class="spiel-box">
-                    <h2 class="step-title lang-en">Step 8: How did you hear about us?</h2>
-                    <h2 class="step-title lang-es">Paso 8: ¿Cómo se enteró de nosotros?</h2>
-                    <div class="spiel-text">
+                    <h2 class="step-title">Step 8: How did you hear about us?</h2>
+                    <div class="spiel-text" style="border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
                         <p>
                             <span class="lang-es">¿Cómo se enteró de nuestro programa?</span>
                             <span class="lang-en">How did you hear about our program?</span>
                         </p>
+                    </div>
+                    <fieldset class="user-input-group" id="hear-about-group">
+                        <div class="radio-inline"><input type="radio" id="hear-social" name="hearAbout" value="Social Media"><label for="hear-social" class="radio-label">Social Media</label></div>
+                        <div class="radio-inline"><input type="radio" id="hear-fliers" name="hearAbout" value="Fliers"><label for="hear-fliers" class="radio-label">Fliers</label></div>
+                        <div class="radio-inline"><input type="radio" id="hear-friend" name="hearAbout" value="Friend"><label for="hear-friend" class="radio-label">Friend</label></div>
+                        <div class="radio-inline"><input type="radio" id="hear-others" name="hearAbout" value="Others"><label for="hear-others" class="radio-label">Others:</label></div>
+                        <div id="hear-others-container" class="smooth-reveal" style="display: none; width: 100%; margin-top: 5px;">
+                            <input type="text" id="hear-others-input" placeholder="Please specify..." style="width: 100%;">
+                        </div>
+                    </fieldset>
+                    <div class="spiel-text smooth-reveal" id="flier-spiel" style="display: none; border-top-left-radius: 0; border-top-right-radius: 0; margin-top: -15px;">
                         <p>
-                            <span class="lang-es"><em>(Si fue por un folleto)</em> ¿Cuál es el número en la parte inferior derecha del folleto? (es un número muy pequeño y se encuentra en la esquina inferior derecha del folleto).</span>
-                            <span class="lang-en"><em>(IF Flyer)</em> What's the number on the bottom right side of the flyer (it's a very small number, and it's located on the bottom right corner of the flyer)?</span>
+                            <span class="lang-es"><em>(Dado que mencionó un folleto)</em> ¿Cuál es el número en la parte inferior derecha del folleto? (es un número muy pequeño).</span>
+                            <span class="lang-en"><em>(Since you mentioned a flyer)</em> What's the number on the bottom right side of the flyer (it's a very small number)?</span>
                         </p>
                     </div>
                 </div>
                 
                 <div class="spiel-box">
-                    <h2 class="step-title lang-en">Step 9: Meal Preference & Closing</h2>
-                    <h2 class="step-title lang-es">Paso 9: Preferencia de Comidas y Cierre</h2>
+                    <h2 class="step-title">Step 9: Meal Preference & Closing</h2>
                     <div class="spiel-text">
                         <p>
                             <span class="lang-es">¡Ahora viene la mejor parte: las comidas! Nuestro programa principal envía una caja de deliciosas comidas frescas y listas para consumir directamente a su puerta cada semana, precocinadas y sin tiempo de preparación. A la mayoría de las personas les encantan, pero también podemos solicitar alimentos crudos (groceries) si lo prefiere. ¿Le gustarían comidas listas para consumir o alimentos crudos (groceries)?</span>
@@ -529,16 +546,6 @@
     </div>
     
     <div id="drawer-overlay"></div>
-
-    <div id="alfabeto-modal" class="modal-overlay">
-        <div class="modal-content" style="max-width: 650px; max-height: 85vh; display: flex; flex-direction: column;">
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e1bee7; padding-bottom: 10px; margin-bottom: 15px;">
-                <h3 style="margin: 0; color: #6a1b9a;">Spanish Alphabet (Alfabeto)</h3>
-                <button id="btn-close-alfabeto" style="background: none; border: none; color: #6a1b9a; font-size: 1.8em; cursor: pointer; margin: 0; padding: 0; line-height: 1;">&times;</button>
-            </div>
-            <div id="alfabeto-grid" style="overflow-y: auto; padding-right: 5px; flex: 1;"></div>
-        </div>
-    </div>
 
     <div id="tts-modal" class="modal-overlay">
         <div class="modal-content">

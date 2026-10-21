@@ -1,5 +1,24 @@
 // DOM Elements
 const body = document.body;
+const btnThemeToggle = document.getElementById('btn-theme-toggle');
+
+// Initialize Theme
+const currentTheme = localStorage.getItem('theme');
+if (currentTheme === 'dark') {
+    body.classList.add('dark-mode');
+    btnThemeToggle.innerHTML = '☀️ Light Mode';
+}
+
+btnThemeToggle.addEventListener('click', () => {
+    body.classList.toggle('dark-mode');
+    if (body.classList.contains('dark-mode')) {
+        btnThemeToggle.innerHTML = '☀️ Light Mode';
+        localStorage.setItem('theme', 'dark');
+    } else {
+        btnThemeToggle.innerHTML = '🌙 Dark Mode';
+        localStorage.setItem('theme', 'light');
+    }
+});
 const langRadios = document.querySelectorAll('input[name="language"]');
 const dirRadios = document.querySelectorAll('input[name="callDirection"]');
 const outRespRadios = document.querySelectorAll(
@@ -49,6 +68,35 @@ const btnCopyMembersTemplate = document.getElementById('btn-copy-members-templat
 const memberTemplate = document.getElementById('member-template');
 
 let addedMembersData = []; // Array to store raw object data for the copy template
+
+// Dynamic Progress Calculation
+function updateProgress() {
+    const progressBar = document.getElementById('progress-bar');
+    if (!progressBar) return;
+    
+    let score = 0;
+    const total = 6; // Total required checkpoints
+
+    if (agentInput.value.trim() !== '') score++;
+    if (customerInput.value.trim() !== '') score++;
+    if (phoneInput.value.replace(/\D/g, '').length >= 10) score++;
+    if (document.querySelector('input[name="hhCount"]:checked')) score++;
+    if (addedMembersData.length > 0) score++;
+    
+    const hearRadio = document.querySelector('input[name="hearAbout"]:checked');
+    const hearOthersInput = document.getElementById('hear-others-input');
+    if (hearRadio) {
+        if (hearRadio.value === 'Others') {
+            if (hearOthersInput && hearOthersInput.value.trim() !== '') score++;
+        } else {
+            score++;
+        }
+    }
+
+    const percentage = (score / total) * 100;
+    progressBar.style.width = percentage + '%';
+    progressBar.style.backgroundColor = percentage === 100 ? '#388e3c' : '#4caf50';
+}
 
 // Dynamic Text Updaters
 function updateDynamicText() {
@@ -116,8 +164,16 @@ function evaluateWorkflow() {
 }
 
 // Event Listeners
+phoneInput.addEventListener('input', function(e) {
+    let x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+    e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+});
+
 [agentInput, customerInput, phoneInput].forEach(input => {
-    input.addEventListener('input', updateDynamicText);
+    input.addEventListener('input', () => {
+        updateDynamicText();
+        updateProgress();
+    });
 });
 
 langRadios.forEach(radio => radio.addEventListener('change', evaluateWorkflow));
@@ -190,6 +246,7 @@ function renderMembers() {
             e.stopPropagation(); // Prevents the accordion from toggling when clicking delete
             addedMembersData.splice(index, 1);
             renderMembers(); // Re-render the list to reset the indexes
+            updateProgress();
         });
 
         sidebarMembersList.appendChild(clone);
@@ -229,6 +286,7 @@ btnAddMember.addEventListener('click', function() {
     });
 
     renderMembers();
+    updateProgress();
 
     // Clear Step 2 fields to make way for new additions
     memberFname.value = '';
@@ -252,6 +310,13 @@ function resetSession() {
     document.getElementById('lang-en').checked = true;
     document.getElementById('dir-inbound').checked = true;
     outRespRadios.forEach(radio => radio.checked = false);
+    
+    if (typeof hearAboutRadios !== 'undefined') {
+        hearAboutRadios.forEach(r => r.checked = false);
+        document.getElementById('hear-others-container').style.display = 'none';
+        document.getElementById('hear-others-input').value = '';
+        document.getElementById('flier-spiel').style.display = 'none';
+    }
 
     // Reset Member inputs and clear profiles
     hhCountRadios.forEach(radio => radio.checked = false);
@@ -271,6 +336,7 @@ function resetSession() {
 
     updateDynamicText();
     evaluateWorkflow();
+    updateProgress();
     window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
@@ -278,7 +344,58 @@ btnRestart.addEventListener("click", resetSession);
 if (btnNewSession) btnNewSession.addEventListener("click", resetSession);
 
 btnPushCopyNotes.addEventListener('click', function() {
-    if (!callNotes.value) return;
+    const agent = agentInput.value.trim() || 'N/A';
+    const customer = customerInput.value.trim() || 'N/A';
+    const phone = phoneInput.value.trim() || 'N/A';
+    const direction = document.querySelector('input[name="callDirection"]:checked')?.value || 'inbound';
+    const lang = document.querySelector('input[name="language"]:checked')?.value === 'es' ? 'Spanish' : 'English';
+    
+    const hhCount = document.querySelector('input[name="hhCount"]:checked')?.value || 'N/A';
+    
+    const hearAboutRadio = document.querySelector('input[name="hearAbout"]:checked');
+    let hearAbout = 'N/A';
+    if (hearAboutRadio) {
+        if (hearAboutRadio.value === 'Others') {
+            hearAbout = `Others (${document.getElementById('hear-others-input').value.trim() || 'Not specified'})`;
+        } else {
+            hearAbout = hearAboutRadio.value;
+        }
+    }
+
+    let compiledData = `--- CALL SUMMARY ---\n`;
+    compiledData += `Agent: ${agent}\n`;
+    compiledData += `Customer: ${customer}\n`;
+    compiledData += `Phone: ${phone}\n`;
+    compiledData += `Type: ${direction.charAt(0).toUpperCase() + direction.slice(1)} (${lang})\n\n`;
+
+    compiledData += `--- APPLICATION DATA ---\n`;
+    compiledData += `Household Count: ${hhCount}\n`;
+    compiledData += `Source: ${hearAbout}\n\n`;
+
+    if (addedMembersData.length > 0) {
+        compiledData += `--- MEMBERS ---\n`;
+        addedMembersData.forEach((m, i) => {
+            compiledData += `${i + 1}. ${m.fname} ${m.lname} | DOB: ${m.dob} | Med: ${m.medicaid} | CIN: ${m.cin} | Preg: ${m.preg}\n`;
+        });
+        compiledData += `\n`;
+    }
+
+    let manualNotes = callNotes.value.trim();
+    let finalOutput = '';
+
+    // Check if we already compiled previously to avoid stacking duplicate summaries
+    if (manualNotes.includes('--- CALL SUMMARY ---')) {
+        const parts = manualNotes.split('--- ADDITIONAL NOTES ---');
+        const customPart = parts.length > 1 ? parts[1].trim() : '';
+        finalOutput = compiledData + `--- ADDITIONAL NOTES ---\n` + customPart;
+    } else {
+        finalOutput = compiledData + `--- ADDITIONAL NOTES ---\n` + manualNotes;
+    }
+
+    // Push the compiled format into the textarea
+    callNotes.value = finalOutput.trim();
+
+    // Copy the final text to the clipboard
     navigator.clipboard.writeText(callNotes.value).then(function() {
         const originalText = btnPushCopyNotes.textContent;
         btnPushCopyNotes.textContent = '✅ Copied!';
@@ -533,6 +650,23 @@ function performSearch() {
 globalSearchInput.addEventListener('input', performSearch);
 
 
+// Header Mobile Menu Toggle
+const btnMobileMenu = document.getElementById('btn-mobile-menu');
+const headerNavActions = document.getElementById('header-nav-actions');
+
+if (btnMobileMenu && headerNavActions) {
+    btnMobileMenu.addEventListener('click', (e) => {
+        e.stopPropagation();
+        headerNavActions.classList.toggle('show');
+    });
+
+    document.addEventListener('click', (e) => {
+        if (headerNavActions.classList.contains('show') && !headerNavActions.contains(e.target) && e.target !== btnMobileMenu) {
+            headerNavActions.classList.remove('show');
+        }
+    });
+}
+
 // Mobile Drawers
 const btnToggleInfo = document.getElementById('btn-toggle-info');
 const btnToggleSearch = document.getElementById("btn-toggle-search");
@@ -581,7 +715,7 @@ const btnCloseTts = document.getElementById('btn-close-tts');
 
 // Alfabeto Elements
 const btnAlfabeto = document.getElementById('btn-alfabeto');
-const modalAlfabeto = document.getElementById('alfabeto-modal');
+const sidebarAlfabeto = document.getElementById('alfabeto-sidebar');
 const btnCloseAlfabeto = document.getElementById('btn-close-alfabeto');
 const alfabetoGrid = document.getElementById('alfabeto-grid');
 
@@ -626,11 +760,38 @@ btnAlfabeto.addEventListener('click', () => {
     if (alfabetoGrid.innerHTML === '') {
         renderAlfabeto();
     }
-    modalAlfabeto.classList.add('show');
+    sidebarAlfabeto.classList.toggle('show');
 });
 
+const hearAboutRadios = document.querySelectorAll('input[name="hearAbout"]');
+const hearOthersContainer = document.getElementById('hear-others-container');
+const hearOthersInput = document.getElementById('hear-others-input');
+const flierSpiel = document.getElementById('flier-spiel');
+
+hearAboutRadios.forEach(radio => {
+    radio.addEventListener('change', function() {
+        if (this.value === 'Others') {
+            hearOthersContainer.style.display = 'block';
+            hearOthersInput.focus();
+        } else {
+            hearOthersContainer.style.display = 'none';
+            hearOthersInput.value = '';
+        }
+        
+        if (this.value === 'Fliers') {
+            flierSpiel.style.display = 'block';
+        } else {
+            flierSpiel.style.display = 'none';
+        }
+            updateProgress();
+    });
+});
+
+    hearOthersInput.addEventListener('input', updateProgress);
+    hhCountRadios.forEach(radio => radio.addEventListener('change', updateProgress));
+
 btnCloseAlfabeto.addEventListener('click', () => {
-    modalAlfabeto.classList.remove('show');
+    sidebarAlfabeto.classList.remove('show');
 });
 
 function populateVoiceList() {
